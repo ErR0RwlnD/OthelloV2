@@ -90,9 +90,9 @@ class overTrain():
     @staticmethod
     def getNames():
         names = []
-        for iteration in range(10):
+        for part in range(4):
             filePath = os.path.join(
-                Hyper.examples, 'overtraining.examples.limit.iter-'+str(iteration))
+                Hyper.examples, 'overtraining.examples.limit.part-'+str(part))
             names.append(filePath)
         return names
 
