@@ -4,15 +4,15 @@ from game import OthelloGame
 from utils import *
 
 args = dotdict({
-    'numIters': 100,
+    'numIters': 1000,
     'numEps': 100,
     'tempThreshold': 15,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 200000,
-    'arenaCompare': 10,  # 4*20 indeed
+    'arenaCompare': 20,  # 4*20 indeed
 
-    'load_model': False,
-    'checkpoint_file': 'best.pth',
+    'load_model': True,
+    'checkpoint_file': 'overtraining.limit_0.pth',
     'load_exmaples': False,
     'examples_file': 'unknows',
     'numItersForTrainExamplesHistory': 20,

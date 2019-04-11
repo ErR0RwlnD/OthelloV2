@@ -113,6 +113,6 @@ if __name__ == "__main__":
     args = dotdict({'iterations': 3})
     game = OthelloGame()
     net = DensnetWrapper(game)
-    net.load_checkpoint('overtraining_1.pth')
+    net.load_checkpoint('overtraining_0.pth')
     coach = overTrain(game, net, args)
     coach.train()

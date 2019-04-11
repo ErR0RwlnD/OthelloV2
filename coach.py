@@ -79,8 +79,7 @@ class Coach():
 
             eps_time.update(time.time()-end)
             end = time.time()
-            print(str(i)+' Eps finished in ' +
-                  str(eps_time.sum)+', AVG: '+str(eps_time.avg))
+            print('    Examples generated finished in ' + str(eps_time.val))
             if len(self.trainExamplesHistory) > self.args.numItersForTrainExamplesHistory:
                 self.trainExamplesHistory.pop(0)
             self.saveTrainExamples(i-1)
@@ -91,8 +90,12 @@ class Coach():
             self.net.save_checkpoint('temp.pth')
             self.net.train(trainExamples)
             self.net.save_checkpoint('trainTemp.pth')
+            eps_time.update(time.time()-end)
+            end = time.time()
+            print('    training finished in '+str(eps_time.val))
 
-            print('NEW VERSION VS PREVIOUS VERSION')
+            torch.cuda.empty_cache()
+            print('    NEW VERSION VS PREVIOUS VERSION')
             torch.cuda.empty_cache()
             pool = Pool(4)
             results = pool.imap(fight, [self.args.arenaCompare]*4)
@@ -103,15 +106,23 @@ class Coach():
             newWins, preWins, draws = np.array(
                 list(map(lambda x: list(x), results))).sum(axis=0)
             print(
-                'NEW/PREV WIN RATE : {}/{} ; DRAWs : {}'.format(newWins, preWins, draws))
+                '     NEW/PREV WIN RATE : {}/{} ; DRAWs : {}'.format(newWins, preWins, draws))
             if preWins+newWins == 0 or float(newWins)/(preWins+newWins) < self.args.updateThreshold:
-                print('REJECTING new model')
+                print('    REJECTING new model')
                 self.net.load_checkpoint('temp.pth')
             else:
-                print('ACCEPING new model')
+                print('    ACCEPING new model')
                 self.net.save_checkpoint(self.getCheckpointFile(i))
                 self.net.save_checkpoint('best.pth')
+            eps_time.update(time.time()-end)
+            end = time.time()
+            print('Arena finished in '+str(eps_time.val))
+            print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
             torch.cuda.empty_cache()
+
+            if eps_time.sum > 32400:
+                self.net.save_checkpoint('oneDay-0.examples')
+                sys.exit(0)
 
     def getCheckpointFile(self, iteration):
         return 'checkpoint_'+str(iteration)+'.pth'

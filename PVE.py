@@ -11,8 +11,7 @@ if __name__ == "__main__":
     hp = HumanOthelloPlayer(g).play
 
     net = DensnetWrapper(g)
-    net.load_checkpoint('overTraining.limit_2.pth')
-    args = dotdict({'numMCTSSims': 500, 'cpuct': 1.0})
+    net.load_checkpoint('overTraining.limit_0.pth')
     mcts = MCTS(g, net)
 
     def netp(x):

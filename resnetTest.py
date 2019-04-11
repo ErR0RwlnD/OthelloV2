@@ -12,7 +12,6 @@ if __name__ == "__main__":
 
     net = GeneratorNet(g)
     net.load_checkpoint('overTraining.pth')
-    args = dotdict({'numMCTSSims': 500, 'cpuct': 1.0})
     mcts = MCTS(g, net)
 
     def netp(x):
