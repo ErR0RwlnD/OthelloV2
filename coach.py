@@ -137,11 +137,11 @@ class Coach():
 
     def loadTrainExamples(self):
         folder = Hyper.examples
-        modelFile = os.path.join(folder, self.args.examples_file)
-        examplesFile = modelFile+'.examples'
+        examplesFile = os.path.join(folder, self.args.examples_file)
+
         if not os.path.isfile(examplesFile):
             print(examplesFile)
-            r = input("File with trainExamples not found. Continue? [y|n]")
+            r = input("File with trainExamples not found. Continue? [y|n]\n")
             if r != "y":
                 sys.exit()
         else:
