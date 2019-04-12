@@ -121,7 +121,7 @@ class Coach():
             torch.cuda.empty_cache()
 
             if eps_time.sum > 32400:
-                self.net.save_checkpoint('oneDay-0.examples')
+                self.net.save_checkpoint('oneDay-1.examples')
                 sys.exit(0)
 
     def getCheckpointFile(self, iteration):
