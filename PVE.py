@@ -19,4 +19,4 @@ if __name__ == "__main__":
         return np.argmax(mcts.getAction(x, temp=0))
 
     arena = Arena(netp, hp, g, display=display)
-    print(arena.playGames(6, verbose=True))
+    print(arena.playGames(2, verbose=True))
