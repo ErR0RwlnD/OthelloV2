@@ -5,17 +5,18 @@ from utils import dotdict
 from player import *
 from wrapper import DensnetWrapper
 import numpy as np
+from resnet import GeneratorNet
 
 if __name__ == "__main__":
     g = OthelloGame()
     hp = HumanOthelloPlayer(g).play
 
     net = DensnetWrapper(g)
-    net.load_checkpoint('overTraining.limit_0.pth')
+    net.load_checkpoint('best.pth')
     mcts = MCTS(g, net)
 
     def netp(x):
         return np.argmax(mcts.getAction(x, temp=0))
 
     arena = Arena(netp, hp, g, display=display)
-    print(arena.playGames(2, verbose=True))
+    print(arena.playGames(6, verbose=True))
