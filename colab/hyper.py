@@ -11,11 +11,11 @@ class Hyper():
     # desnet wrapper
     dropout = 0.3
     epochs = 20
-    batch_size = 1600
+    batch_size = 2000
     cuda = torch.cuda.is_available()
 
     # MCTS
-    sims = 50
+    sims = 40
     cpuct = 1
 
     # training
