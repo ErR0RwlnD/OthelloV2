@@ -1,8 +1,7 @@
 import math
 import numpy as np
-from hyper import Hyper
-from game import OthelloGame
-# from multiprocessing import Pool
+from colab.hyper import Hyper
+from colab.game import OthelloGame
 
 
 class MCTS():
@@ -17,14 +16,6 @@ class MCTS():
         self.Vs = {}
 
     def getAction(self, canoicalBoard, temp=1):
-        # TODO: implement multiprocessing
-        # pool = Pool(8)
-        # for _ in range(Hyper.sims):
-        #     pool.apply_async(self.search, canoicalBoard)
-        # pool.close()
-        # pool.terminate()
-        # pool.join()
-
         for _ in range(Hyper.sims):
             self.search(canoicalBoard)
 

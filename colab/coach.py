@@ -1,18 +1,18 @@
 from collections import deque
-from arena import Arena
-from mcts import MCTS
+from colab.arena import Arena
+from colab.mcts import MCTS
 import numpy as np
-from utils import AverageMeter, dotdict
+from colab.utils import AverageMeter, dotdict
 import time
 import os
 import sys
 from pickle import Pickler, Unpickler
 from random import shuffle
 from multiprocessing import Pool
-from game import OthelloGame
-from wrapper import DensnetWrapper
+from colab.game import OthelloGame
+from colab.wrapper import DensnetWrapper
 import torch
-from hyper import Hyper
+from colab.hyper import Hyper
 
 
 def fight(arenaCompare):
@@ -31,9 +31,10 @@ def fight(arenaCompare):
 
 
 class Coach():
-    def __init__(self, game, net, args):
+    def __init__(self, game, net, drive, args):
         self.game = game
         self.net = net
+        self.drive = drive
         self.args = args
         self.mcts = MCTS(self.game, self.net)
         self.trainExamplesHistory = []
@@ -127,13 +128,15 @@ class Coach():
     def getCheckpointFile(self, iteration):
         return 'checkpoint_'+str(iteration)+'.pth'
 
-    def saveTrainExamples(self, iteration):
+    def saveTrainExamples(self, iteration, upload=False):
         folder = Hyper.examples
         filename = os.path.join(
             folder, self.getCheckpointFile(iteration)+'.examples')
         with open(filename, 'wb+') as f:
             Pickler(f).dump(self.trainExamplesHistory)
         assert(f.closed)
+        if upload:
+            self.drive.uploadFile(filename)
 
     def loadTrainExamples(self):
         folder = Hyper.examples

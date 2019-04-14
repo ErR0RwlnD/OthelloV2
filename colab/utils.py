@@ -27,30 +27,28 @@ class AverageMeter():
         self.avg = self.sum / self.count
 
 
-def login_google_drive():
-    auth.authenticate_user()
-    gauth = GoogleAuth()
-    gauth.credentials = GoogleCredentials.get_application_default()
-    drive = GoogleDrive(gauth)
-    return drive
+class googleDrive():
+    def __init__(self):
+        self.drive = self.login_google_drive()
 
+    def login_google_drive(self):
+        auth.authenticate_user()
+        gauth = GoogleAuth()
+        gauth.credentials = GoogleCredentials.get_application_default()
+        drive = GoogleDrive(gauth)
+        return drive
 
-def list_file(drive, folder='root'):
-    command = '\''+folder+'\''+' in parents and trashed=false'
-    file_list = drive.ListFile({'q': command}).GetList()
-    for files in file_list:
-        print('title: %s, id: %s, mimeType: %s' %
-              (files['title'], files['id'], files["mimeType"]))
+    def list_file(self, folder='root'):
+        command = '\''+folder+'\''+' in parents and trashed=false'
+        file_list = self.drive.ListFile({'q': command}).GetList()
+        for files in file_list:
+            print('title: %s, id: %s, mimeType: %s' %
+                  (files['title'], files['id'], files["mimeType"]))
 
+    def downloadFile(self, id, name):
+        self.drive.CreateFile({'id': id}).GetContentFile(name)
 
-def downloadFile(id, name):
-    drive.CreateFile({'id': id}).GetContentFile(name)
-
-
-def uploadFile(name):
-    upload = drive.CreateFile({'title': name})
-    upload.SetContentFile(name)
-    upload.Upload()
-
-
-drive = login_google_drive()
+    def uploadFile(self, name):
+        upload = self, drive.CreateFile({'title': name})
+        upload.SetContentFile(name)
+        upload.Upload()

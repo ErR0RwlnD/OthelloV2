@@ -10,16 +10,17 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
-from densnet import OthelloDensnet as densnet
-from utils import AverageMeter, dotdict
-from hyper import Hyper
+from colab.densnet import OthelloDensnet as densnet
+from colab.utils import AverageMeter, dotdict
+from colab.hyper import Hyper
 
 
 class DensnetWrapper():
-    def __init__(self, game, verbose=False):
+    def __init__(self, game, drive, verbose=False):
         self.net = densnet(game, dropout=0.3)
         self.board_x, self.board_y = game.getBoardSize()
         self.action_size = game.getActionSize()
+        self.drive = drive
         self.verbose = verbose
         if Hyper.cuda:
             self.net.cuda()
@@ -88,9 +89,10 @@ class DensnetWrapper():
     def loss_v(self, targets, outputs):
         return torch.sum((targets-outputs.view(-1))**2)/targets.size()[0]
 
-    def save_checkpoint(self, filename, folder=Hyper.checkpoints):
+    def save_checkpoint(self, filename, folder=Hyper.checkpoints, upload=False):
         filepath = os.path.join(folder, filename)
         torch.save(self.net.state_dict(), filepath)
+        self.drive.uploadFile(filepath)
 
     def load_checkpoint(self, filename, folder=Hyper.checkpoints, strict=True):
         filepath = os.path.join(folder, filename)

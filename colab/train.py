@@ -1,7 +1,7 @@
-from coach import Coach
-from wrapper import DensnetWrapper
-from game import OthelloGame
-from utils import *
+from colab.coach import Coach
+from colab.wrapper import DensnetWrapper
+from colab.game import OthelloGame
+from colab.utils import dotdict, googleDrive
 
 args = dotdict({
     'numIters': 1000,
@@ -20,11 +20,13 @@ args = dotdict({
 
 if __name__ == "__main__":
     g = OthelloGame()
-    net = DensnetWrapper(g)
+    drive = googleDrive()
+    net = DensnetWrapper(g, drive)
+
     if args.load_model:
         net.load_checkpoint(args.checkpoint_file)
 
-    c = Coach(g, net, args)
+    c = Coach(g, net, drive, args)
     if args.load_exmaples:
         c.loadTrainExamples()
     c.learn()
