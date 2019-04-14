@@ -114,7 +114,8 @@ class Coach():
             else:
                 print('    ACCEPING new model')
                 self.net.save_checkpoint(self.getCheckpointFile(i))
-                self.net.save_checkpoint('best.pth')
+                self.net.save_checkpoint('best.pth', upload=True)
+                self.saveTrainExamples(i-1, upload=True)
             eps_time.update(time.time()-end)
             end = time.time()
             print('Arena finished in '+str(eps_time.val))
@@ -122,7 +123,7 @@ class Coach():
             torch.cuda.empty_cache()
 
             if eps_time.sum > 32400:
-                self.net.save_checkpoint('Day-2.pth')
+                self.net.save_checkpoint('Day-3.pth', upload=True)
                 sys.exit(0)
 
     def getCheckpointFile(self, iteration):
