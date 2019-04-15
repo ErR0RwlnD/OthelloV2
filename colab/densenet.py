@@ -36,13 +36,13 @@ class _DenseBlock(nn.Sequential):
             self.add_module('denselayer%d' % (i+1), layer)
 
 
-class OthelloDensnet(nn.Module):
+class OthelloDensenet(nn.Module):
     def __init__(self, game, dropout=0.3):
         self.board_x, self.board_y = game.getBoardSize()
         self.action_size = game.getActionSize()
         self.dropout = dropout
 
-        super(OthelloDensnet, self).__init__()
+        super(OthelloDensenet, self).__init__()
         self.features = nn.Sequential(OrderedDict(
             [('conv0', nn.Conv2d(1, 64, kernel_size=3, stride=1, padding=1, bias=False)),
              ('bn0', nn.BatchNorm2d(64)),
