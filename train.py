@@ -14,7 +14,7 @@ args = dotdict({
     'load_model': True,
     'checkpoint_file': 'best.pth',
     'load_exmaples': True,
-    'examples_file': 'checkpoint_4.pth.examples',
+    'examples_file': 'checkpoint_5.pth.examples',
     'numItersForTrainExamplesHistory': 20,
 })
 
