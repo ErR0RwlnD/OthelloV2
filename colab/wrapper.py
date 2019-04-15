@@ -16,7 +16,7 @@ from hyper import Hyper
 
 
 class DensenetWrapper():
-    def __init__(self, game, drive, verbose=False):
+    def __init__(self, game, drive=None, verbose=False):
         self.net = densenet(game, dropout=0.3)
         self.board_x, self.board_y = game.getBoardSize()
         self.action_size = game.getActionSize()
@@ -92,7 +92,8 @@ class DensenetWrapper():
     def save_checkpoint(self, filename, folder=Hyper.checkpoints, upload=False):
         filepath = os.path.join(folder, filename)
         torch.save(self.net.state_dict(), filepath)
-        self.drive.uploadFile(filepath)
+        if upload:
+            self.drive.uploadFile(filepath)
 
     def load_checkpoint(self, filename, folder=Hyper.checkpoints, strict=True):
         filepath = os.path.join(folder, filename)
