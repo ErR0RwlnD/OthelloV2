@@ -1,7 +1,7 @@
-from colab.coach import Coach
-from colab.wrapper import DensnetWrapper
-from colab.game import OthelloGame
-from colab.utils import dotdict, googleDrive
+from coach import Coach
+from wrapper import DensnetWrapper
+from game import OthelloGame
+from utils import dotdict, googleDrive
 
 args = dotdict({
     'numIters': 1000,
@@ -9,7 +9,7 @@ args = dotdict({
     'tempThreshold': 15,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 200000,
-    'arenaCompare': 20,  # 4*20 indeed
+    'arenaCompare': 40,  # 4*20 indeed
 
     'load_model': True,
     'checkpoint_file': 'best.pth',

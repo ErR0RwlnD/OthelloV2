@@ -10,12 +10,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
-from densnet import OthelloDensnet as densnet
+from densnet import OthelloDensenet as densenet
 from utils import AverageMeter, dotdict
 from hyper import Hyper
 
 
-class DensnetWrapper():
+class DensenetWrapper():
     def __init__(self, game, verbose=False):
         self.net = densnet(game, dropout=0.3)
         self.board_x, self.board_y = game.getBoardSize()

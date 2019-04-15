@@ -1,18 +1,18 @@
 from collections import deque
-from colab.arena import Arena
-from colab.mcts import MCTS
+from arena import Arena
+from mcts import MCTS
 import numpy as np
-from colab.utils import AverageMeter, dotdict
+from utils import AverageMeter, dotdict
 import time
 import os
 import sys
 from pickle import Pickler, Unpickler
 from random import shuffle
 from multiprocessing import Pool
-from colab.game import OthelloGame
-from colab.wrapper import DensnetWrapper
+from game import OthelloGame
+from wrapper import DensnetWrapper
 import torch
-from colab.hyper import Hyper
+from hyper import Hyper
 
 
 def fight(arenaCompare):
@@ -122,8 +122,8 @@ class Coach():
             print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
             torch.cuda.empty_cache()
 
-            if eps_time.sum > 32400:
-                self.net.save_checkpoint('Day-3.pth', upload=True)
+            if eps_time.sum > 36000:
+                self.net.save_checkpoint('Day-0-colab.pth', upload=True)
                 sys.exit(0)
 
     def getCheckpointFile(self, iteration):

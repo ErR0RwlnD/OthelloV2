@@ -1,6 +1,6 @@
-from colab.board import Board
+from board import Board
 import numpy as np
-from colab.hyper import Hyper
+from hyper import Hyper
 
 
 class OthelloGame():

@@ -1,4 +1,4 @@
-from colab.hyper import Hyper
+from hyper import Hyper
 
 
 class Board():

@@ -23,4 +23,4 @@ class Hyper():
     examples = './trainingExamples'
 
     # examples generator
-    processing = 4
+    processing = 2

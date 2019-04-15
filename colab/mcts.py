@@ -1,7 +1,7 @@
 import math
 import numpy as np
-from colab.hyper import Hyper
-from colab.game import OthelloGame
+from hyper import Hyper
+from game import OthelloGame
 
 
 class MCTS():

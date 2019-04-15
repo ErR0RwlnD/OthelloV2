@@ -10,14 +10,14 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
-from colab.densnet import OthelloDensnet as densnet
-from colab.utils import AverageMeter, dotdict
-from colab.hyper import Hyper
+from densenet import OthelloDensenet as densenet
+from utils import AverageMeter, dotdict
+from hyper import Hyper
 
 
-class DensnetWrapper():
+class DensenetWrapper():
     def __init__(self, game, drive, verbose=False):
-        self.net = densnet(game, dropout=0.3)
+        self.net = densenet(game, dropout=0.3)
         self.board_x, self.board_y = game.getBoardSize()
         self.action_size = game.getActionSize()
         self.drive = drive
