@@ -1,5 +1,5 @@
 from coach import Coach
-from wrapper import DensnetWrapper
+from wrapper import DensenetWrapper
 from game import OthelloGame
 from utils import dotdict, googleDrive
 
@@ -21,7 +21,7 @@ args = dotdict({
 if __name__ == "__main__":
     g = OthelloGame()
     drive = googleDrive()
-    net = DensnetWrapper(g, drive)
+    net = DensenetWrapper(g, drive)
 
     if args.load_model:
         net.load_checkpoint(args.checkpoint_file)

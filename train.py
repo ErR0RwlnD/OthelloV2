@@ -1,5 +1,5 @@
 from coach import Coach
-from wrapper import DensnetWrapper
+from wrapper import DensenetWrapper
 from game import OthelloGame
 from utils import *
 
@@ -20,7 +20,7 @@ args = dotdict({
 
 if __name__ == "__main__":
     g = OthelloGame()
-    net = DensnetWrapper(g)
+    net = DensenetWrapper(g)
     if args.load_model:
         net.load_checkpoint(args.checkpoint_file)
 

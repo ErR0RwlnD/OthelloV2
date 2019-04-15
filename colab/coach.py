@@ -10,17 +10,17 @@ from pickle import Pickler, Unpickler
 from random import shuffle
 from multiprocessing import Pool
 from game import OthelloGame
-from wrapper import DensnetWrapper
+from wrapper import DensenetWrapper
 import torch
 from hyper import Hyper
 
 
 def fight(arenaCompare):
     g = OthelloGame()
-    newNet = DensnetWrapper(g)
+    newNet = DensenetWrapper(g)
     newNet.load_checkpoint('trainTemp.pth')
     newMCTS = MCTS(g, newNet)
-    preNet = DensnetWrapper(g)
+    preNet = DensenetWrapper(g)
     preNet.load_checkpoint('temp.pth')
     preMCTS = MCTS(g, preNet)
 

@@ -3,7 +3,7 @@ from mcts import MCTS
 from game import OthelloGame, display
 from utils import dotdict
 from player import *
-from wrapper import DensnetWrapper
+from wrapper import DensenetWrapper
 from resnet import GeneratorNet
 import numpy as np
 
@@ -17,7 +17,7 @@ if __name__ == "__main__":
             if i < j:
                 print(str(i)+' vs '+str(j))
                 g = OthelloGame()
-                net0 = DensnetWrapper(g)
+                net0 = DensenetWrapper(g)
                 net0.load_checkpoint(pth[i])
                 mcts0 = MCTS(g, net0)
                 net1 = GeneratorNet(g)
