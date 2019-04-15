@@ -96,7 +96,6 @@ class Coach():
 
             torch.cuda.empty_cache()
             print('    NEW VERSION VS PREVIOUS VERSION')
-            torch.cuda.empty_cache()
             pool = Pool(4)
             results = pool.imap(fight, [self.args.arenaCompare]*4)
             pool.close()

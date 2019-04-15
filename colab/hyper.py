@@ -21,6 +21,3 @@ class Hyper():
     # training
     checkpoints = './checkpoints'
     examples = './trainingExamples'
-
-    # examples generator
-    processing = 2

@@ -9,7 +9,7 @@ args = dotdict({
     'tempThreshold': 15,
     'updateThreshold': 0.6,
     'maxlenOfQueue': 200000,
-    'arenaCompare': 40,  # 4*20 indeed
+    'arenaCompare': 60,
 
     'load_model': True,
     'checkpoint_file': 'best.pth',

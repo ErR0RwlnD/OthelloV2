@@ -8,32 +8,17 @@ import os
 import sys
 from pickle import Pickler, Unpickler
 from random import shuffle
-from multiprocessing import Pool
 from game import OthelloGame
 from wrapper import DensenetWrapper
 import torch
 from hyper import Hyper
 
 
-def fight(arenaCompare):
-    g = OthelloGame()
-    newNet = DensenetWrapper(g)
-    newNet.load_checkpoint('trainTemp.pth')
-    newMCTS = MCTS(g, newNet)
-    preNet = DensenetWrapper(g)
-    preNet.load_checkpoint('temp.pth')
-    preMCTS = MCTS(g, preNet)
-
-    arena = Arena(lambda x: np.argmax(newMCTS.getAction(x, temp=0)),
-                  lambda x: np.argmax(preMCTS.getAction(x, temp=0)),
-                  g)
-    return arena.playGames(arenaCompare)
-
-
 class Coach():
     def __init__(self, game, net, drive, args):
         self.game = game
         self.net = net
+        self.preNet = net.__class__(self.game)
         self.drive = drive
         self.args = args
         self.mcts = MCTS(self.game, self.net)
@@ -89,23 +74,21 @@ class Coach():
                 trainExamples.extend(e)
             shuffle(trainExamples)
             self.net.save_checkpoint('temp.pth')
+            self.preNet.load_checkpoint('temp.pth')
             self.net.train(trainExamples)
-            self.net.save_checkpoint('trainTemp.pth')
             eps_time.update(time.time()-end)
             end = time.time()
             print('    training finished in '+str(eps_time.val))
 
             torch.cuda.empty_cache()
             print('    NEW VERSION VS PREVIOUS VERSION')
-            torch.cuda.empty_cache()
-            pool = Pool(4)
-            results = pool.imap(fight, [self.args.arenaCompare]*4)
-            pool.close()
-            pool.join()
+            preMCTS = MCTS(self.game, self.preNet)
+            newMCTS = MCTS(self.game, self.net)
+            arena = Arena(lambda x: np.argmax(newMCTS.getAction(x, temp=0)),
+                          lambda x: np.argmax(preMCTS.getAction(x, temp=0)),
+                          self.game)
+            newWins, preWins, draws = arena.playGames(self.args.arenaCompare)
 
-            results = list(results)
-            newWins, preWins, draws = np.array(
-                list(map(lambda x: list(x), results))).sum(axis=0)
             print(
                 '     NEW/PREV WIN RATE : {}/{} ; DRAWs : {}'.format(newWins, preWins, draws))
             if preWins+newWins == 0 or float(newWins)/(preWins+newWins) < self.args.updateThreshold:
