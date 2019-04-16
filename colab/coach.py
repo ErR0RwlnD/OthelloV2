@@ -97,7 +97,7 @@ class Coach():
             else:
                 print('    ACCEPING new model')
                 self.net.save_checkpoint(self.getCheckpointFile(i))
-                self.net.save_checkpoint('best.pth', upload=True)
+                self.net.save_checkpoint('best-'+str(i)+'.pth', upload=True)
                 self.saveTrainExamples(i-1, upload=True)
             eps_time.update(time.time()-end)
             end = time.time()

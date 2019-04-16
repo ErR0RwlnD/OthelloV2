@@ -8,7 +8,7 @@ args = dotdict({
     'numEps': 100,
     'tempThreshold': 15,
     'updateThreshold': 0.6,
-    'maxlenOfQueue': 200000,
+    'maxlenOfQueue': 150000,
     'arenaCompare': 60,
 
     'load_model': True,
