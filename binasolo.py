@@ -1,6 +1,6 @@
 from arena import Arena
 from mcts import MCTS
-from game import OthelloGame
+from game import OthelloGame, display
 from wrapper import DensenetWrapper
 import numpy as np
 
@@ -21,5 +21,5 @@ if __name__ == "__main__":
     def netC(x):
         return np.argmax(mctsColab.getAction(x, temp=0))
 
-    arena = Arena(netL, netC, g)
-    print(arena.playGames(2, verbose=True))
+    arena = Arena(netL, netC, g, display=display)
+    print(arena.playGames(50, verbose=True))

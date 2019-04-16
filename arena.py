@@ -41,7 +41,6 @@ class Arena():
         if bo1:
             return self.playGame(verbose=verbose)
         else:
-            eps = 0
             maxeps = int(num)
 
             num = int(num/2)
@@ -57,8 +56,6 @@ class Arena():
                 else:
                     draws += 1
 
-                eps += 1
-
             self.player1, self.player2 = self.player2, self.player1
             for _ in range(num):
                 gameResult = self.playGame(verbose=verbose)
@@ -68,6 +65,5 @@ class Arena():
                     twoWon += 1
                 else:
                     draws += 1
-                eps += 1
 
             return oneWon, twoWon, draws
