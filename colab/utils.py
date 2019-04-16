@@ -49,6 +49,6 @@ class googleDrive():
         self.drive.CreateFile({'id': id}).GetContentFile(name)
 
     def uploadFile(self, name):
-        upload = self.drive.CreateFile({'title': name})
+        upload = self.drive.CreateFile()
         upload.SetContentFile(name)
         upload.Upload()
