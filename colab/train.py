@@ -8,12 +8,12 @@ args = dotdict({
     'numEps': 100,
     'tempThreshold': 15,
     'updateThreshold': 0.6,
-    'maxlenOfQueue': 200000,
+    'maxlenOfQueue': 100000,
     'arenaCompare': 60,
 
     'load_model': True,
     'checkpoint_file': 'best-4.pth',
-    'load_exmaples': True,
+    'load_exmaples': False,
     'examples_file': 'checkpoint_2.pth.examples',
     'numItersForTrainExamplesHistory': 20,
 })
