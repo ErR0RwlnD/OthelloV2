@@ -120,7 +120,8 @@ class Coach():
             Pickler(f).dump(self.trainExamplesHistory)
         assert(f.closed)
         if upload:
-            self.drive.uploadFile(filename)
+            try:
+                self.drive.uploadFile(filename)
 
     def loadTrainExamples(self):
         folder = Hyper.examples

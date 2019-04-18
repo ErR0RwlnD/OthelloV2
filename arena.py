@@ -37,7 +37,7 @@ class Arena():
             self.display(board)
         return self.game.getGameEnded(board, 1)
 
-    def playGames(self, num=2, verbose=False, bo1=False):
+    def playGames(self, num=2, verbose=False, bo1=False, bots=False):
         if bo1:
             return self.playGame(verbose=verbose)
         else:
@@ -55,6 +55,8 @@ class Arena():
                     twoWon += 1
                 else:
                     draws += 1
+                if bots:
+                    print(str(oneWon)+'  '+str(twoWon))
 
             self.player1, self.player2 = self.player2, self.player1
             for _ in range(num):
@@ -65,5 +67,7 @@ class Arena():
                     twoWon += 1
                 else:
                     draws += 1
+                if bots:
+                    print(str(oneWon)+'  '+str(twoWon))
 
             return oneWon, twoWon, draws

@@ -93,7 +93,8 @@ class DensenetWrapper():
         filepath = os.path.join(folder, filename)
         torch.save(self.net.state_dict(), filepath)
         if upload:
-            self.drive.uploadFile(filepath)
+            try:
+                self.drive.uploadFile(filepath)
 
     def load_checkpoint(self, filename, folder=Hyper.checkpoints, strict=True):
         filepath = os.path.join(folder, filename)
