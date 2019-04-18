@@ -12,7 +12,7 @@ args = dotdict({
     'arenaCompare': 60,
 
     'load_model': True,
-    'checkpoint_file': 'day1-best.pth',
+    'checkpoint_file': 'best-7.pth',
     'load_exmaples': False,
     'examples_file': 'checkpoint_6.pth.examples',
     'numItersForTrainExamplesHistory': 20,

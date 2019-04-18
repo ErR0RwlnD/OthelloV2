@@ -105,7 +105,7 @@ class Coach():
             print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
             torch.cuda.empty_cache()
 
-            if eps_time.sum > 36000:
+            if eps_time.sum > 41400:
                 self.net.save_checkpoint('Day-2-colab.pth', upload=True)
                 sys.exit(0)
 
