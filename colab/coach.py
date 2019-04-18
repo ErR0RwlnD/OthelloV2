@@ -122,6 +122,8 @@ class Coach():
         if upload:
             try:
                 self.drive.uploadFile(filename)
+            except Exception as e:
+                print(e)
 
     def loadTrainExamples(self):
         folder = Hyper.examples

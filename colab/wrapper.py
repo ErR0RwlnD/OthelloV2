@@ -95,6 +95,8 @@ class DensenetWrapper():
         if upload:
             try:
                 self.drive.uploadFile(filepath)
+            except Exception as e:
+                print(e)
 
     def load_checkpoint(self, filename, folder=Hyper.checkpoints, strict=True):
         filepath = os.path.join(folder, filename)
