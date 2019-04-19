@@ -12,6 +12,7 @@ from game import OthelloGame
 from wrapper import DensenetWrapper
 import torch
 from hyper import Hyper
+import gc
 
 
 class Coach():
@@ -62,6 +63,7 @@ class Coach():
                     self.mcts = MCTS(self.game, self.net)
                     iterationTrainExamples += self.executeEp()
                 self.trainExamplesHistory.append(iterationTrainExamples)
+                gc.collect()
 
             eps_time.update(time.time()-end)
             end = time.time()
@@ -80,6 +82,7 @@ class Coach():
             end = time.time()
             print('    training finished in '+str(eps_time.val))
 
+            gc.collect()
             torch.cuda.empty_cache()
             print('    NEW VERSION VS PREVIOUS VERSION')
             preMCTS = MCTS(self.game, self.preNet)
@@ -103,6 +106,7 @@ class Coach():
             end = time.time()
             print('Arena finished in '+str(eps_time.val))
             print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
+            gc.collect()
             torch.cuda.empty_cache()
 
             if eps_time.sum > 41400:
