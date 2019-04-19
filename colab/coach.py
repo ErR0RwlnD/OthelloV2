@@ -101,6 +101,7 @@ class Coach():
                 print('    ACCEPING new model')
                 self.net.save_checkpoint(self.getCheckpointFile(i))
                 self.net.save_checkpoint('best-'+str(i)+'.pth', upload=True)
+                self.net.save_checkpoint('best.pth', upload=True)
                 self.saveTrainExamples(i-1, upload=True)
             eps_time.update(time.time()-end)
             end = time.time()
@@ -111,7 +112,6 @@ class Coach():
 
             if eps_time.sum > 41400:
                 self.net.save_checkpoint('Day-2-colab.pth', upload=True)
-                sys.exit(0)
 
     def getCheckpointFile(self, iteration):
         return 'checkpoint_'+str(iteration)+'.pth'
