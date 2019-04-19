@@ -25,6 +25,7 @@ class Coach():
         self.mcts = MCTS(self.game, self.net)
         self.trainExamplesHistory = []
         self.skipFirstSelfPlay = False
+        self.arena = False
 
     def executeEp(self):
         trainExamples = []
@@ -83,32 +84,39 @@ class Coach():
             print('    training finished in '+str(eps_time.val))
 
             gc.collect()
-            torch.cuda.empty_cache()
-            print('    NEW VERSION VS PREVIOUS VERSION')
-            preMCTS = MCTS(self.game, self.preNet)
-            newMCTS = MCTS(self.game, self.net)
-            arena = Arena(lambda x: np.argmax(newMCTS.getAction(x, temp=0)),
-                          lambda x: np.argmax(preMCTS.getAction(x, temp=0)),
-                          self.game)
-            newWins, preWins, draws = arena.playGames(self.args.arenaCompare)
+            if self.arena:
+                torch.cuda.empty_cache()
+                print('    NEW VERSION VS PREVIOUS VERSION')
+                preMCTS = MCTS(self.game, self.preNet)
+                newMCTS = MCTS(self.game, self.net)
+                arena = Arena(lambda x: np.argmax(newMCTS.getAction(x, temp=0)),
+                              lambda x: np.argmax(
+                                  preMCTS.getAction(x, temp=0)),
+                              self.game)
+                newWins, preWins, draws = arena.playGames(
+                    self.args.arenaCompare)
 
-            print(
-                '     NEW/PREV WIN RATE : {}/{} ; DRAWs : {}'.format(newWins, preWins, draws))
-            if preWins+newWins == 0 or float(newWins)/(preWins+newWins) < self.args.updateThreshold:
-                print('    REJECTING new model')
-                self.net.load_checkpoint('temp.pth')
+                print(
+                    '     NEW/PREV WIN RATE : {}/{} ; DRAWs : {}'.format(newWins, preWins, draws))
+                if preWins+newWins == 0 or float(newWins)/(preWins+newWins) < self.args.updateThreshold:
+                    print('    REJECTING new model')
+                    self.net.load_checkpoint('temp.pth')
+                else:
+                    print('    ACCEPING new model')
+                    self.net.save_checkpoint(self.getCheckpointFile(i))
+                    self.net.save_checkpoint(
+                        'best-'+str(i)+'.pth', upload=True)
+                    self.net.save_checkpoint('best.pth', upload=True)
+                    self.saveTrainExamples(i-1, upload=True)
+                eps_time.update(time.time()-end)
+                end = time.time()
+                print('Arena finished in '+str(eps_time.val))
+                print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
+                gc.collect()
+                torch.cuda.empty_cache()
+                self.arena = False
             else:
-                print('    ACCEPING new model')
-                self.net.save_checkpoint(self.getCheckpointFile(i))
-                self.net.save_checkpoint('best-'+str(i)+'.pth', upload=True)
-                self.net.save_checkpoint('best.pth', upload=True)
-                self.saveTrainExamples(i-1, upload=True)
-            eps_time.update(time.time()-end)
-            end = time.time()
-            print('Arena finished in '+str(eps_time.val))
-            print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
-            gc.collect()
-            torch.cuda.empty_cache()
+                self.arena = True
 
             if eps_time.sum > 41400:
                 self.net.save_checkpoint('Day-2-colab.pth', upload=True)
