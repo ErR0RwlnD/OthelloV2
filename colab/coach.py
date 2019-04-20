@@ -25,7 +25,6 @@ class Coach():
         self.mcts = MCTS(self.game, self.net)
         self.trainExamplesHistory = []
         self.skipFirstSelfPlay = False
-        self.arena = False
 
     def executeEp(self):
         trainExamples = []
@@ -84,7 +83,7 @@ class Coach():
             print('    training finished in '+str(eps_time.val))
 
             gc.collect()
-            if self.arena:
+            if i % 2 == 0:
                 torch.cuda.empty_cache()
                 print('    NEW VERSION VS PREVIOUS VERSION')
                 preMCTS = MCTS(self.game, self.preNet)
@@ -114,9 +113,6 @@ class Coach():
                 print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
                 gc.collect()
                 torch.cuda.empty_cache()
-                self.arena = False
-            else:
-                self.arena = True
 
             if eps_time.sum > 41400:
                 self.net.save_checkpoint('Day-2-colab.pth', upload=True)
@@ -125,6 +121,7 @@ class Coach():
         return 'checkpoint_'+str(iteration)+'.pth'
 
     def saveTrainExamples(self, iteration, upload=False):
+        gc.collect()
         folder = Hyper.examples
         filename = os.path.join(
             folder, self.getCheckpointFile(iteration)+'.examples')
@@ -136,8 +133,10 @@ class Coach():
                 self.drive.uploadFile(filename)
             except Exception as e:
                 print(e)
+        gc.collect()
 
     def loadTrainExamples(self):
+        gc.collect()
         folder = Hyper.examples
         examplesFile = os.path.join(folder, self.args.examples_file)
 
@@ -151,3 +150,4 @@ class Coach():
                 self.trainExamplesHistory = Unpickler(f).load()
             assert(f.closed)
             self.skipFirstSelfPlay = True
+            gc.collect()

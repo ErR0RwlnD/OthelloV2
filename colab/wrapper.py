@@ -3,6 +3,7 @@ import shutil
 import time
 import random
 import numpy as np
+import gc
 import math
 import sys
 import torch
@@ -90,6 +91,7 @@ class DensenetWrapper():
         return torch.sum((targets-outputs.view(-1))**2)/targets.size()[0]
 
     def save_checkpoint(self, filename, folder=Hyper.checkpoints, upload=False):
+        gc.collect()
         filepath = os.path.join(folder, filename)
         torch.save(self.net.state_dict(), filepath)
         if upload:
@@ -97,10 +99,13 @@ class DensenetWrapper():
                 self.drive.uploadFile(filepath)
             except Exception as e:
                 print(e)
+        gc.collect()
 
     def load_checkpoint(self, filename, folder=Hyper.checkpoints, strict=True):
+        gc.collect()
         filepath = os.path.join(folder, filename)
         if not os.path.exists(filepath):
             raise('No such checkpoint')
         checkpoint = torch.load(filepath)
         self.net.load_state_dict(checkpoint, strict=strict)
+        gc.collect()
