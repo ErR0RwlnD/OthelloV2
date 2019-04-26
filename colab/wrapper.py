@@ -45,8 +45,8 @@ class DensenetWrapper():
     def train(self):
         optimizer = optim.Adam(self.net.parameters())
         dataset = _ExamplesDataset()
-        dataloader = DataLoader(
-            dataset, batch_size=Hyper.batch_size, shuffle=True, num_workers=Hyper.num_cpu)
+        dataloader = DataLoader(dataset, batch_size=Hyper.batch_size,
+                                shuffle=True, num_workers=Hyper.num_cpu, drop_last=True)
         for epoch in range(Hyper.epochs):
             if self.verbose:
                 print('EPOCH :: '+str(epoch+1))
