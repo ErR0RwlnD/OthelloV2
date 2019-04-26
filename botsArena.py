@@ -8,7 +8,7 @@ from resnet import GeneratorNet
 import numpy as np
 
 if __name__ == "__main__":
-    pth = ['best4.pth', 'best5.pth','best6.pth','bestc1.pth','bestc2.pth']
+    pth = ['best6.pth', 'bestc1.pth', 'bestc2.pth']
     length = len(pth)
     score = list(0 for _ in range(length))
 
@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
                 arena = Arena(foo0, foo1, g)
                 win0, win1, draw = arena.playGames(
-                    200, verbose=False, bots=True)
+                    100, verbose=False, bots=True)
                 score[i] += (win0*2+draw)
                 score[j] += (win1*2+draw)
                 print(score)
