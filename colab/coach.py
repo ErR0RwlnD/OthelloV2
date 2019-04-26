@@ -23,8 +23,14 @@ class Coach():
         self.drive = drive
         self.args = args
         self.mcts = MCTS(self.game, self.net)
-        self.trainExamplesHistory = []
         self.skipFirstSelfPlay = False
+        if args.loadTrainExamples = True:
+            with open('examples_log', 'rb') as f:
+                content = Unpickler(f).load()
+                self.index = content[0]
+            assert(f.closed)
+        else:
+            self.index = None
 
     def executeEp(self):
         trainExamples = []
@@ -40,7 +46,7 @@ class Coach():
             pi = self.mcts.getAction(canonicalBoard, temp=temp)
             sym = self.game.getSymmetries(canonicalBoard, pi)
             for b, p in sym:
-                trainExamples.append([b, self.curPlayer, p, None])
+                trainExamples.append([b, self.curPlayer, p])
 
             action = np.random.choice(len(pi), p=pi)
             board, self.curPlayer = self.game.getNextState(
@@ -57,62 +63,51 @@ class Coach():
         for i in range(1, self.args.numIters+1):
             print('------ ITER ' + str(i) + ' ------')
             if not self.skipFirstSelfPlay or i > 1:
-                iterationTrainExamples = deque(
-                    [], maxlen=self.args.maxlenOfQueue)
                 for eps in range(self.args.numEps):
                     self.mcts = MCTS(self.game, self.net)
-                    iterationTrainExamples += self.executeEp()
-                self.trainExamplesHistory.append(iterationTrainExamples)
+                    iterationTrainExamples = self.executeEp()
+                    for example in iterationTrainExamples:
+                        self.saveTrainExamples(example)
+                        self.index = (self.index+1) % self.args.maxExamples
                 gc.collect()
 
             eps_time.update(time.time()-end)
             end = time.time()
             print('    Examples generated finished in ' + str(eps_time.val))
-            if len(self.trainExamplesHistory) > self.args.numItersForTrainExamplesHistory:
-                self.trainExamplesHistory.pop(0)
-            self.saveTrainExamples(i-1)
-            trainExamples = []
-            for e in self.trainExamplesHistory:
-                trainExamples.extend(e)
-            shuffle(trainExamples)
             self.net.save_checkpoint('temp.pth')
             self.preNet.load_checkpoint('temp.pth')
-            self.net.train(trainExamples)
+            self.net.train()
             eps_time.update(time.time()-end)
             end = time.time()
             print('    training finished in '+str(eps_time.val))
 
             gc.collect()
-            if i % 2 == 0:
-                torch.cuda.empty_cache()
-                print('    NEW VERSION VS PREVIOUS VERSION')
-                preMCTS = MCTS(self.game, self.preNet)
-                newMCTS = MCTS(self.game, self.net)
-                arena = Arena(lambda x: np.argmax(newMCTS.getAction(x, temp=0)),
-                              lambda x: np.argmax(
-                                  preMCTS.getAction(x, temp=0)),
-                              self.game)
-                newWins, preWins, draws = arena.playGames(
-                    self.args.arenaCompare)
+            torch.cuda.empty_cache()
+            print('    NEW VERSION VS PREVIOUS VERSION')
+            preMCTS = MCTS(self.game, self.preNet)
+            newMCTS = MCTS(self.game, self.net)
+            arena = Arena(lambda x: np.argmax(newMCTS.getAction(x, temp=0)),
+                            lambda x: np.argmax(
+                                preMCTS.getAction(x, temp=0)),
+                            self.game)
+            newWins, preWins, draws = arena.playGames(
+                self.args.arenaCompare)
 
-                print(
-                    '     NEW/PREV WIN RATE : {}/{} ; DRAWs : {}'.format(newWins, preWins, draws))
-                if preWins+newWins == 0 or float(newWins)/(preWins+newWins) < self.args.updateThreshold:
-                    print('    REJECTING new model')
-                    self.net.load_checkpoint('temp.pth')
-                else:
-                    print('    ACCEPING new model')
-                    self.net.save_checkpoint(self.getCheckpointFile(i))
-                    self.net.save_checkpoint(
-                        'best-'+str(i)+'.pth', upload=True)
-                    self.net.save_checkpoint('best.pth', upload=True)
-                    self.saveTrainExamples(i-1, upload=True)
-                eps_time.update(time.time()-end)
-                end = time.time()
-                print('Arena finished in '+str(eps_time.val))
-                print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
-                gc.collect()
-                torch.cuda.empty_cache()
+            print(
+                '     NEW/PREV WIN RATE : {}/{} ; DRAWs : {}'.format(newWins, preWins, draws))
+            if preWins+newWins == 0 or float(newWins)/(preWins+newWins) < self.args.updateThreshold:
+                print('    REJECTING new model')
+                self.net.load_checkpoint('temp.pth')
+            else:
+                print('    ACCEPING new model')
+                self.net.save_checkpoint(self.getCheckpointFile(i))
+                self.net.save_checkpoint(
+                    'best-'+str(i)+'.pth', upload=True)
+                self.net.save_checkpoint('best.pth', upload=True)
+            eps_time.update(time.time()-end)
+            end = time.time()
+            print('Arena finished in '+str(eps_time.val))
+            print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
 
             if eps_time.sum > 41400:
                 self.net.save_checkpoint('Day-2-colab.pth', upload=True)
@@ -120,34 +115,9 @@ class Coach():
     def getCheckpointFile(self, iteration):
         return 'checkpoint_'+str(iteration)+'.pth'
 
-    def saveTrainExamples(self, iteration, upload=False):
-        gc.collect()
+    def saveTrainExamples(self, content):
         folder = Hyper.examples
-        filename = os.path.join(
-            folder, self.getCheckpointFile(iteration)+'.examples')
+        filename = os.path.join(folder, 'single_'+str(self.index)+'.examples')
         with open(filename, 'wb+') as f:
-            Pickler(f).dump(self.trainExamplesHistory)
+            Pickler(f).dump(content)
         assert(f.closed)
-        if upload:
-            try:
-                self.drive.uploadFile(filename)
-            except Exception as e:
-                print(e)
-        gc.collect()
-
-    def loadTrainExamples(self):
-        gc.collect()
-        folder = Hyper.examples
-        examplesFile = os.path.join(folder, self.args.examples_file)
-
-        if not os.path.isfile(examplesFile):
-            print(examplesFile)
-            r = input("File with trainExamples not found. Continue? [y|n]\n")
-            if r != "y":
-                sys.exit()
-        else:
-            with open(examplesFile, 'rb') as f:
-                self.trainExamplesHistory = Unpickler(f).load()
-            assert(f.closed)
-            self.skipFirstSelfPlay = True
-            gc.collect()

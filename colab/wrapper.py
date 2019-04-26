@@ -1,7 +1,5 @@
 import os
-import shutil
 import time
-import random
 import numpy as np
 import gc
 import math
@@ -10,10 +8,28 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torchvision import datasets, transforms
+from torch.utils.data import Dataset, DataLoader
 from densenet import OthelloDensenet as densenet
 from utils import AverageMeter, dotdict
 from hyper import Hyper
+from pickle import Unpickler
+
+
+class _ExamplesDataset(Dataset):
+    def __init__(self):
+        self.examples = os.listdir(Hyper.examples)
+
+    def __len__(self):
+        return len(self.examples)
+
+    def __getitem__(self, idx):
+        examplePath = os.path.join(Hyper.examples, self.examples[index])
+        with open(examplePath, 'rb') as f:
+            example = Unpickler(f).load()
+        assert(f.closed)
+        return [torch.FloatTensor(np.array(example[0]).astype(np.float64)),
+                torch.FloatTensor(np.array(example[1]).astype(np.float64)),
+                torch.FloatTensor(np.array(example[2]).astypr(np.float64))]
 
 
 class DensenetWrapper():
@@ -26,8 +42,11 @@ class DensenetWrapper():
         if Hyper.cuda:
             self.net.cuda()
 
-    def train(self, examples):
+    def train(self):
         optimizer = optim.Adam(self.net.parameters())
+        dataset = _ExamplesDataset():
+        dataloader = DataLoader(
+            dataset, batch_size=Hyper.batch_size, shuffle=True, num_workers=Hyper.num_cpu)
         for epoch in range(Hyper.epochs):
             if self.verbose:
                 print('EPOCH :: '+str(epoch+1))
@@ -37,18 +56,12 @@ class DensenetWrapper():
             v_losses = AverageMeter()
             end = time.time()
 
-            batch_idx = 0
-            while batch_idx < int(len(examples)/Hyper.batch_size):
-                sample_idx = np.random.randint(
-                    len(examples), size=Hyper.batch_size)
-                boards, pis, vs = list(zip(*[examples[i] for i in sample_idx]))
-                boards = torch.FloatTensor(np.array(boards).astype(np.float64))
-                target_pis = torch.FloatTensor(np.array(pis))
-                target_vs = torch.FloatTensor(np.array(vs).astype(np.float64))
-
+            for idx, examples in enumerate(dataloader):
+                boards, target_pis, target_vs = examples
                 if Hyper.cuda:
-                    boards, target_pis, target_vs = boards.contiguous().cuda(
-                    ), target_pis.contiguous().cuda(), target_vs.contiguous().cuda()
+                    boards = boards.cuda()
+                    target_pis = target_pis.cuda()
+                    target_vs = target_vs.cuda()
 
                 out_pi, out_v = self.net(boards)
                 l_pi = self.loss_pi(target_pis, out_pi)
@@ -66,7 +79,6 @@ class DensenetWrapper():
                 if self.verbose:
                     print('    ONE batch finished in : '+str(batch_time.val))
                 end = time.time()
-                batch_idx += 1
 
             print('    EPOCH '+str(epoch) +
                   ' finished, tatolly cost '+str(batch_time.sum))

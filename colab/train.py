@@ -8,14 +8,13 @@ args = dotdict({
     'numEps': 80,
     'tempThreshold': 15,
     'updateThreshold': 0.64,
-    'maxlenOfQueue': 50000,
+    'maxExamples': 100000,
     'arenaCompare': 50,
 
     'load_model': True,
     'checkpoint_file': 'best.pth',
     'load_exmaples': True,
     'examples_file': 'checkpoint_0.pth.examples',
-    'numItersForTrainExamplesHistory': 20,
 })
 
 if __name__ == "__main__":

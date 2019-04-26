@@ -13,6 +13,7 @@ class Hyper():
     epochs = 10
     batch_size = 2000
     cuda = torch.cuda.is_available()
+    num_cpu = 4
 
     # MCTS
     sims = 40
