@@ -10,7 +10,7 @@ class Hyper():
 
     # desnet wrapper
     dropout = 0.3
-    epochs = 10
+    epochs = 15
     batch_size = 2500
     cuda = torch.cuda.is_available()
     num_cpu = 2

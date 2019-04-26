@@ -29,6 +29,7 @@ class Coach():
                 content = Unpickler(f).load()
                 self.index = content
             assert(f.closed)
+            self.skipFirstSelfPlay = True
         else:
             self.index = 0
 

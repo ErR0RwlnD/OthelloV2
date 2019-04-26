@@ -8,7 +8,7 @@ args = dotdict({
     'numEps': 100,
     'tempThreshold': 15,
     'updateThreshold': 0.62,
-    'maxExamples': 100000,
+    'maxExamples': 150000,
     'arenaCompare': 50,
 
     'load_model': True,
@@ -25,6 +25,4 @@ if __name__ == "__main__":
         net.load_checkpoint(args.checkpoint_file)
 
     c = Coach(g, net, drive, args)
-    if args.load_examples:
-        c.loadTrainExamples()
     c.learn()

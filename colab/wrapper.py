@@ -29,7 +29,7 @@ class _ExamplesDataset(Dataset):
         assert(f.closed)
         return [torch.FloatTensor(np.array(example[0]).astype(np.float64)),
                 torch.FloatTensor(np.array(example[1]).astype(np.float64)),
-                torch.FloatTensor(np.array(example[2]).astypr(np.float64))]
+                torch.FloatTensor(np.array(example[2]).astype(np.float64))]
 
 
 class DensenetWrapper():
