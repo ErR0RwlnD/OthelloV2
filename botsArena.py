@@ -8,7 +8,7 @@ from resnet import GeneratorNet
 import numpy as np
 
 if __name__ == "__main__":
-    pth = ['best.pth', 'day1-best.pth']
+    pth = ['best4.pth', 'best5.pth','best6.pth','bestc1.pth','bestc2.pth']
     length = len(pth)
     score = list(0 for _ in range(length))
 
