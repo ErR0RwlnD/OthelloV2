@@ -7,13 +7,13 @@ args = dotdict({
     'numIters': 1000,
     'numEps': 100,
     'tempThreshold': 15,
-    'updateThreshold': 0.65,
+    'updateThreshold': 0.6,
     'maxlenOfQueue': 150000,
     'arenaCompare': 20,  # 4*20 indeed
 
     'load_model': True,
     'checkpoint_file': 'Day-5.pth',
-    'load_exmaples': True,
+    'load_examples': True,
     'examples_file': 'checkpoint_4.pth.examples',
     'numItersForTrainExamplesHistory': 20,
 })
@@ -25,6 +25,6 @@ if __name__ == "__main__":
         net.load_checkpoint(args.checkpoint_file)
 
     c = Coach(g, net, args)
-    if args.load_exmaples:
+    if args.load_examples:
         c.loadTrainExamples()
     c.learn()

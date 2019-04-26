@@ -24,13 +24,13 @@ class Coach():
         self.args = args
         self.mcts = MCTS(self.game, self.net)
         self.skipFirstSelfPlay = False
-        if args.loadTrainExamples = True:
+        if args.load_examples == True:
             with open('examples_log', 'rb') as f:
                 content = Unpickler(f).load()
-                self.index = content[0]
+                self.index = content
             assert(f.closed)
         else:
-            self.index = None
+            self.index = 0
 
     def executeEp(self):
         trainExamples = []
@@ -70,6 +70,7 @@ class Coach():
                         self.saveTrainExamples(example)
                         self.index = (self.index+1) % self.args.maxExamples
                 gc.collect()
+            self.writeLog()
 
             eps_time.update(time.time()-end)
             end = time.time()
@@ -87,9 +88,9 @@ class Coach():
             preMCTS = MCTS(self.game, self.preNet)
             newMCTS = MCTS(self.game, self.net)
             arena = Arena(lambda x: np.argmax(newMCTS.getAction(x, temp=0)),
-                            lambda x: np.argmax(
-                                preMCTS.getAction(x, temp=0)),
-                            self.game)
+                          lambda x: np.argmax(
+                preMCTS.getAction(x, temp=0)),
+                self.game)
             newWins, preWins, draws = arena.playGames(
                 self.args.arenaCompare)
 
@@ -120,4 +121,9 @@ class Coach():
         filename = os.path.join(folder, 'single_'+str(self.index)+'.examples')
         with open(filename, 'wb+') as f:
             Pickler(f).dump(content)
+        assert(f.closed)
+
+    def writeLog(self):
+        with open('examples_log', 'wb+') as f:
+            Pickler(f).dump(self.index)
         assert(f.closed)

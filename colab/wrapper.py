@@ -23,7 +23,7 @@ class _ExamplesDataset(Dataset):
         return len(self.examples)
 
     def __getitem__(self, idx):
-        examplePath = os.path.join(Hyper.examples, self.examples[index])
+        examplePath = os.path.join(Hyper.examples, self.examples[idx])
         with open(examplePath, 'rb') as f:
             example = Unpickler(f).load()
         assert(f.closed)
@@ -44,7 +44,7 @@ class DensenetWrapper():
 
     def train(self):
         optimizer = optim.Adam(self.net.parameters())
-        dataset = _ExamplesDataset():
+        dataset = _ExamplesDataset()
         dataloader = DataLoader(
             dataset, batch_size=Hyper.batch_size, shuffle=True, num_workers=Hyper.num_cpu)
         for epoch in range(Hyper.epochs):

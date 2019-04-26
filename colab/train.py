@@ -5,16 +5,15 @@ from utils import dotdict, googleDrive
 
 args = dotdict({
     'numIters': 1000,
-    'numEps': 80,
+    'numEps': 100,
     'tempThreshold': 15,
-    'updateThreshold': 0.64,
+    'updateThreshold': 0.62,
     'maxExamples': 100000,
     'arenaCompare': 50,
 
     'load_model': True,
     'checkpoint_file': 'best.pth',
-    'load_exmaples': True,
-    'examples_file': 'checkpoint_0.pth.examples',
+    'load_examples': True
 })
 
 if __name__ == "__main__":
@@ -26,6 +25,6 @@ if __name__ == "__main__":
         net.load_checkpoint(args.checkpoint_file)
 
     c = Coach(g, net, drive, args)
-    if args.load_exmaples:
+    if args.load_examples:
         c.loadTrainExamples()
     c.learn()
