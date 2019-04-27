@@ -115,7 +115,7 @@ class Coach():
             print('Arena finished in '+str(eps_time.val))
             print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
 
-            if eps_time.sum > 36000:
+            if eps_time.sum > 396000:
                 self.net.save_checkpoint('Day-2-colab.pth')
                 if not self.uploaded:
                     try:
