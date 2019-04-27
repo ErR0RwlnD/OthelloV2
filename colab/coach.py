@@ -16,11 +16,10 @@ import gc
 
 
 class Coach():
-    def __init__(self, game, net, drive, args):
+    def __init__(self, game, net, args):
         self.game = game
         self.net = net
         self.preNet = net.__class__(self.game)
-        self.drive = drive
         self.args = args
         self.mcts = MCTS(self.game, self.net)
         self.skipFirstSelfPlay = False
@@ -103,16 +102,15 @@ class Coach():
             else:
                 print('    ACCEPING new model')
                 self.net.save_checkpoint(self.getCheckpointFile(i))
-                self.net.save_checkpoint(
-                    'best-'+str(i)+'.pth', upload=True)
-                self.net.save_checkpoint('best.pth', upload=True)
+                self.net.save_checkpoint('best-'+str(i)+'.pth')
+                self.net.save_checkpoint('best.pth')
             eps_time.update(time.time()-end)
             end = time.time()
             print('Arena finished in '+str(eps_time.val))
             print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
 
-            if eps_time.sum > 41400:
-                self.net.save_checkpoint('Day-2-colab.pth', upload=True)
+            if eps_time.sum > 36000:
+                self.net.save_checkpoint('Day-2-colab.pth')
 
     def getCheckpointFile(self, iteration):
         return 'checkpoint_'+str(iteration)+'.pth'

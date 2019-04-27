@@ -33,11 +33,10 @@ class _ExamplesDataset(Dataset):
 
 
 class DensenetWrapper():
-    def __init__(self, game, drive=None, verbose=False):
+    def __init__(self, game, verbose=False):
         self.net = densenet(game, dropout=0.3)
         self.board_x, self.board_y = game.getBoardSize()
         self.action_size = game.getActionSize()
-        self.drive = drive
         self.verbose = verbose
         if Hyper.cuda:
             self.net.cuda()
@@ -102,15 +101,10 @@ class DensenetWrapper():
     def loss_v(self, targets, outputs):
         return torch.sum((targets-outputs.view(-1))**2)/targets.size()[0]
 
-    def save_checkpoint(self, filename, folder=Hyper.checkpoints, upload=False):
+    def save_checkpoint(self, filename, folder=Hyper.checkpoints):
         gc.collect()
         filepath = os.path.join(folder, filename)
         torch.save(self.net.state_dict(), filepath)
-        if upload:
-            try:
-                self.drive.uploadFile(filepath)
-            except Exception as e:
-                print(e)
         gc.collect()
 
     def load_checkpoint(self, filename, folder=Hyper.checkpoints, strict=True):

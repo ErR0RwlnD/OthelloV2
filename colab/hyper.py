@@ -20,5 +20,5 @@ class Hyper():
     cpuct = 1
 
     # training
-    checkpoints = './checkpoints'
-    examples = './trainingExamples'
+    checkpoints = './drive/checkpoints'
+    examples = './drive/examples'

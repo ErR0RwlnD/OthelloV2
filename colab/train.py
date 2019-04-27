@@ -8,21 +8,20 @@ args = dotdict({
     'numEps': 100,
     'tempThreshold': 15,
     'updateThreshold': 0.62,
-    'maxExamples': 150000,
+    'maxExamples': 200000,
     'arenaCompare': 50,
 
     'load_model': True,
-    'checkpoint_file': 'best-2.pth',
-    'load_examples': True
+    'checkpoint_file': 'best.pth',
+    'load_examples': False
 })
 
 if __name__ == "__main__":
     g = OthelloGame()
-    drive = googleDrive()
-    net = DensenetWrapper(g, drive)
+    net = DensenetWrapper(g)
 
     if args.load_model:
         net.load_checkpoint(args.checkpoint_file)
 
-    c = Coach(g, net, drive, args)
+    c = Coach(g, net, args)
     c.learn()
