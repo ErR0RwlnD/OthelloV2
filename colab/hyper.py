@@ -21,4 +21,4 @@ class Hyper():
 
     # training
     checkpoints = './drive/checkpoints'
-    examples = './drive/examples'
+    examples = './examples'

@@ -1,7 +1,7 @@
 from coach import Coach
 from wrapper import DensenetWrapper
 from game import OthelloGame
-from utils import dotdict, googleDrive
+from utils import dotdict
 
 args = dotdict({
     'numIters': 1000,
