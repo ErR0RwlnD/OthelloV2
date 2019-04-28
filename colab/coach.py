@@ -109,7 +109,6 @@ class Coach():
                 print('    ACCEPING new model')
                 self.net.save_checkpoint(self.getCheckpointFile(i))
                 self.net.save_checkpoint('best-'+str(i)+'.pth')
-                self.net.save_checkpoint('best.pth')
             eps_time.update(time.time()-end)
             end = time.time()
             print('Arena finished in '+str(eps_time.val))

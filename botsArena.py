@@ -8,7 +8,7 @@ from resnet import GeneratorNet
 import numpy as np
 
 if __name__ == "__main__":
-    pth = ['best6.pth', 'bestc1.pth', 'bestc2.pth']
+    pth = ['bestc3.pth', 'overTraining.pth']
     length = len(pth)
     score = list(0 for _ in range(length))
 
@@ -20,7 +20,7 @@ if __name__ == "__main__":
                 net0 = DensenetWrapper(g)
                 net0.load_checkpoint(pth[i])
                 mcts0 = MCTS(g, net0)
-                net1 = DensenetWrapper(g)
+                net1 = GeneratorNet(g)
                 net1.load_checkpoint(pth[j])
                 mcts1 = MCTS(g, net1)
 
@@ -32,9 +32,9 @@ if __name__ == "__main__":
 
                 arena = Arena(foo0, foo1, g)
                 win0, win1, draw = arena.playGames(
-                    100, verbose=False, bots=True)
-                score[i] += (win0*2+draw)
-                score[j] += (win1*2+draw)
+                    400, verbose=False, bots=True)
+                score[i] += win0
+                score[j] += win1
                 print(score)
 
     # the score of 5-overtraining-pth is [50, 78, 102, 80, 90]
