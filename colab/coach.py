@@ -14,6 +14,7 @@ import torch
 from hyper import Hyper
 import gc
 import shutil
+import tarfile
 
 
 class Coach():
@@ -26,15 +27,15 @@ class Coach():
         self.skipFirstSelfPlay = False
         self.uploaded = False
         if args.load_examples == True:
-            if os.path.exists('examples') and os.path.isfile('examples'):
-                shutil.rmtree('examples')
-            shutil.copytree('./drive/examples', 'examples')
+            t = tarfile.open('./drive/examples')
+            t.extract(path='.')
             path = os.path.join(Hyper.checkpoints, 'examples.log')
             with open(path, 'rb') as f:
                 content = Unpickler(f).load()
                 self.index = content
             assert(f.closed)
             self.skipFirstSelfPlay = True
+            gc.collect()
         else:
             self.index = 0
 
@@ -114,11 +115,14 @@ class Coach():
             print('Arena finished in '+str(eps_time.val))
             print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
 
-            if eps_time.sum > 396000:
-                self.net.save_checkpoint('Day-2-colab.pth')
+            if eps_time.sum > 39600:
+                self.net.save_checkpoint('Day-4-colab.pth')
                 if not self.uploaded:
                     try:
-                        shutil.copytree(Hyper.examples, './drive/examples')
+                        with tarfile.open('examples', 'w:gz') as tar:
+                            tar.add('./examples',
+                                    arcname=os.path.basename('./examples'))
+                        shutil.copy('examples', './drive/examples')
                         self.uploaded = True
                     except Exception as e:
                         print(e)

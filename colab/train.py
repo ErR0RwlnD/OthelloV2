@@ -13,7 +13,7 @@ args = dotdict({
 
     'load_model': True,
     'checkpoint_file': 'best.pth',
-    'load_examples': False
+    'load_examples': True
 })
 
 if __name__ == "__main__":
