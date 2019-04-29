@@ -28,7 +28,7 @@ class Coach():
         self.uploaded = False
         if args.load_examples == True:
             t = tarfile.open('./drive/examples')
-            t.extract(path='.')
+            t.extractall(path='.')
             path = os.path.join(Hyper.checkpoints, 'examples.log')
             with open(path, 'rb') as f:
                 content = Unpickler(f).load()
@@ -90,30 +90,31 @@ class Coach():
             print('    training finished in '+str(eps_time.val))
 
             gc.collect()
-            torch.cuda.empty_cache()
-            print('    NEW VERSION VS PREVIOUS VERSION')
-            preMCTS = MCTS(self.game, self.preNet)
-            newMCTS = MCTS(self.game, self.net)
-            arena = Arena(lambda x: np.argmax(newMCTS.getAction(x, temp=0)),
-                          lambda x: np.argmax(
-                preMCTS.getAction(x, temp=0)),
-                self.game)
-            newWins, preWins, draws = arena.playGames(
-                self.args.arenaCompare)
+            if i % 2 == 0:
+                torch.cuda.empty_cache()
+                print('    NEW VERSION VS PREVIOUS VERSION')
+                preMCTS = MCTS(self.game, self.preNet)
+                newMCTS = MCTS(self.game, self.net)
+                arena = Arena(lambda x: np.argmax(newMCTS.getAction(x, temp=0)),
+                              lambda x: np.argmax(
+                    preMCTS.getAction(x, temp=0)),
+                    self.game)
+                newWins, preWins, draws = arena.playGames(
+                    self.args.arenaCompare)
 
-            print(
-                '     NEW/PREV WIN RATE : {}/{} ; DRAWs : {}'.format(newWins, preWins, draws))
-            if preWins+newWins == 0 or float(newWins)/(preWins+newWins) < self.args.updateThreshold:
-                print('    REJECTING new model')
-                self.net.load_checkpoint('temp.pth')
-            else:
-                print('    ACCEPING new model')
-                self.net.save_checkpoint(self.getCheckpointFile(i))
-                self.net.save_checkpoint('best-'+str(i)+'.pth')
-            eps_time.update(time.time()-end)
-            end = time.time()
-            print('Arena finished in '+str(eps_time.val))
-            print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
+                print(
+                    '     NEW/PREV WIN RATE : {}/{} ; DRAWs : {}'.format(newWins, preWins, draws))
+                if preWins+newWins == 0 or float(newWins)/(preWins+newWins) < self.args.updateThreshold:
+                    print('    REJECTING new model')
+                    self.net.load_checkpoint('temp.pth')
+                else:
+                    print('    ACCEPING new model')
+                    self.net.save_checkpoint(self.getCheckpointFile(i))
+                    self.net.save_checkpoint('best-'+str(i)+'.pth')
+                eps_time.update(time.time()-end)
+                end = time.time()
+                print('Arena finished in '+str(eps_time.val))
+                print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
 
             if eps_time.sum > 39600:
                 self.net.save_checkpoint('Day-4-colab.pth')

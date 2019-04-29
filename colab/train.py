@@ -5,14 +5,14 @@ from utils import dotdict
 
 args = dotdict({
     'numIters': 1000,
-    'numEps': 100,
+    'numEps': 50,
     'tempThreshold': 15,
     'updateThreshold': 0.6,
     'maxExamples': 200000,
     'arenaCompare': 50,
 
     'load_model': True,
-    'checkpoint_file': 'best.pth',
+    'checkpoint_file': 'temp.pth',
     'load_examples': True
 })
 
