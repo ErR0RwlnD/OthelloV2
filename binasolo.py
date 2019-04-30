@@ -8,11 +8,11 @@ if __name__ == "__main__":
     g = OthelloGame()
 
     netLocal = DensenetWrapper(g)
-    netLocal.load_checkpoint('best.pth')
+    netLocal.load_checkpoint('bestc4.pth')
     mctsLocal = MCTS(g, netLocal)
 
     netColab = DensenetWrapper(g)
-    netColab.load_checkpoint('best-colab.pth')
+    netColab.load_checkpoint('bestc4.pth')
     mctsColab = MCTS(g, netColab)
 
     def netL(x):

@@ -1,20 +1,25 @@
 import numpy as np
 import time
+from utils import AverageMeter
 
 
 class Arena():
-    def __init__(self, player1, player2, game, display=None):
+    def __init__(self, player1, player2, game, display=None, show_time=False):
         self.player1 = player1
         self.player2 = player2
         self.game = game
         self.display = display
+        self.show_time = show_time
 
     def playGame(self, verbose=False):
         players = [self.player2, None, self.player1]
         curPlayer = 1
         board = self.game.getInitBoard()
         it = 0
+        if self.show_time:
+            cost = AverageMeter()
         while self.game.getGameEnded(board, curPlayer) == 0:
+            start = time.time()
             it += 1
             if verbose:
                 assert(self.display)
@@ -22,18 +27,22 @@ class Arena():
                 self.display(board)
             action = players[curPlayer+1](
                 self.game.getCanonicalForm(board, curPlayer))
-
             valids = self.game.getValidMoves(
                 self.game.getCanonicalForm(board, curPlayer), 1)
-
+            if self.show_time:
+                cost.update(time.time()-start)
+            print('this step cost '+str(cost.val)+' seconds')
+            print('until now, totally cost '+str(cost.sum)+' s')
             if valids[action] == 0:
-                assert valids[action] > 0
                 print(action)
+                assert valids[action] > 0
             board, curPlayer = self.game.getNextState(board, curPlayer, action)
+
         if verbose:
             assert(self.display)
             print('Game over: Ture ', str(it), 'Result',
                   str(self.game.getGameEnded(board, 1)))
+            print('Time totally cost '+str(cost.sum)+' seconds')
             self.display(board)
         return self.game.getGameEnded(board, 1)
 

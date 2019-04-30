@@ -15,7 +15,7 @@ class Hyper():
     cuda = torch.cuda.is_available()
 
     # MCTS
-    sims = 200
+    sims = 50
     cpuct = 1
 
     # training

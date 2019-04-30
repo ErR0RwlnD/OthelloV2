@@ -19,22 +19,22 @@ class HumanOthelloPlayer():
 
     def play(self, board):
         valid = self.game.getValidMoves(board, 1)
-        for i in range(len(valid)):
-            if valid[i]:
-                print(int(i/8), int(i % 8))
-        while True:
-            a = input()
-            x, y = [int(x) for x in a.split(' ')]
-            if x != -1:
+        if valid[-1] == 1:
+            print('no valid action!')
+        else:
+            for i in range(len(valid)):
+                if valid[i]:
+                    print(int(i/8), int(i % 8))
+            while True:
+                a = input()
+                x, y = [int(x) for x in a.split(' ')]
                 a = 8*x+y
-            else:
-                a = 64
-            if valid[a]:
-                break
-            else:
-                print('Invalid')
-
-        return a
+                if valid[a]:
+                    break
+                else:
+                    print('Invalid')
+            return a
+        return 64
 
 
 class GreedyOthelloPlayer():
