@@ -1,7 +1,7 @@
 import math
 import numpy as np
-from hyper import Hyper
-from game import OthelloGame
+from .hyper import Hyper
+from .game import OthelloGame
 # from multiprocessing import Pool
 
 

@@ -1,14 +1,13 @@
-from arena import Arena
-from mcts import MCTS
-from game import OthelloGame, display
-from utils import dotdict
-from player import *
-from wrapper import DensenetWrapper
-from resnet import GeneratorNet
+from OthelloV2.arena import Arena
+from OthelloV2.mcts import MCTS
+from OthelloV2.game import OthelloGame, display
+from OthelloV2.utils import dotdict
+from OthelloV2.player import *
+from OthelloV2.wrapper import DensenetWrapper
 import numpy as np
 
 if __name__ == "__main__":
-    pth = ['bestc1.pth', 'bestc2.pth', 'bestc3.pth']
+    pth = ['bestc1.pth', 'bestc4.pth', 'bestc5.pth']
     length = len(pth)
     score = list(0 for _ in range(length))
 
@@ -32,7 +31,7 @@ if __name__ == "__main__":
 
                 arena = Arena(foo0, foo1, g)
                 win0, win1, draw = arena.playGames(
-                    100, verbose=False, bots=True)
+                    50, verbose=False, bots=True)
                 score[i] += win0
                 score[j] += win1
                 print(score)

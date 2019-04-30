@@ -10,9 +10,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
-from densenet import OthelloDensenet as densenet
-from utils import AverageMeter, dotdict
-from hyper import Hyper
+from .densenet import OthelloDensenet as densenet
+from .utils import AverageMeter, dotdict
+from .hyper import Hyper
 
 
 class DensenetWrapper():
