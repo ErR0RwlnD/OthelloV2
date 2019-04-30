@@ -10,7 +10,7 @@ if __name__ == "__main__":
     hp = HumanOthelloPlayer(g).play
 
     net = DensenetWrapper(g)
-    net.load_checkpoint('best.pth')
+    net.load_checkpoint('bestc4.pth')
     mcts = MCTS(g, net)
 
     def netp(x):

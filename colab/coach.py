@@ -37,6 +37,7 @@ class Coach():
             self.skipFirstSelfPlay = True
             gc.collect()
         else:
+            os.makedirs('./examples')
             self.index = 0
 
     def executeEp(self):
@@ -117,7 +118,7 @@ class Coach():
                 print('Until iter '+str(i)+' totally cost '+str(eps_time.sum))
 
             if eps_time.sum > 39600:
-                self.net.save_checkpoint('Day-4-colab.pth')
+                self.net.save_checkpoint('Day-5-colab.pth')
                 if not self.uploaded:
                     try:
                         with tarfile.open('examples', 'w:gz') as tar:
