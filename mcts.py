@@ -91,7 +91,7 @@ class MCTS():
 
         if (s, a) in self.Qsa:
             self.Qsa[(s, a)] = (self.Nsa[(s, a)] *
-                                self.Qsa[(s, a)]+v)/(self.Nsa[(s, a)]+1)
+                                self.Qsa[(s, a)]+v)/(1+self.Nsa[(s, a)])
             self.Nsa[(s, a)] += 1
         else:
             self.Qsa[(s, a)] = v
